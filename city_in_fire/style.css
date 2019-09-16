@@ -1,0 +1,46 @@
+body {
+	margin: 0;	
+}
+h1 {
+	text-align: center;
+}
+#street {
+	padding: 20px 0;
+	min-height: 50px;
+	display: flex;
+	justify-content: space-around;
+}
+.building {
+	width: 50px;
+	height: 50px;
+	background-color: #000;
+}
+.fire {
+	background-color: red;
+}
+#fireman {
+	width: 30px;
+	height: 50px;
+	background-color: #000;
+	position: relative;
+	border-radius: 10px 10px 0 0;
+}
+#fireman:after,
+#fireman:before {
+	content: "";
+	background-color: red;
+	position: absolute;
+}
+#fireman:after {
+	top: 0;
+	left: 0;
+	width: 30px;
+	height: 20px;
+	border-radius: 10px 10px 0 0;
+}
+#fireman:before {
+	top: 20px;
+	left: -10px;
+	width: 50px;
+	height: 2px;
+}

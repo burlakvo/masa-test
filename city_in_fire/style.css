@@ -1,5 +1,8 @@
 * {
 	position: relative;
+	--color-red: #e84118;
+	--color-black: #2f3640;
+	--color-gray: #dcdde1;
 }
 body {
 	margin: 0;
@@ -7,6 +10,7 @@ body {
 }
 h1 {
 	text-align: center;
+	color: var(--color-black);
 }
 #street {
 	padding: 20px 0;
@@ -17,13 +21,13 @@ h1 {
 .building {
 	width: 30px;
 	height: 50px;
-	background-color: #000;
+	background-color: var(--color-black);
 	position: relative;
 }
 .building:after {
 	content: "";
 	width: 10px;
-	border-bottom: 10px solid #000;
+	border-bottom: 10px solid var(--color-black);
 	border-left: 10px solid transparent;
 	border-right: 10px solid transparent;
 	position: absolute;
@@ -31,22 +35,22 @@ h1 {
 	left: 0;
 }
 .fire {
-	background-color: red;
+	background-color: var(--color-red);
 }
 .fire:after {
-	border-bottom-color: red;
+	border-bottom-color: var(--color-red);
 }
 #fireman {
 	width: 30px;
 	height: 50px;
-	background-color: #000;
+	background-color: var(--color-black);
 	position: relative;
 	border-radius: 10px 10px 0 0;
 }
 #fireman:after,
 #fireman:before {
 	content: "";
-	background-color: red;
+	background-color: var(--color-red);
 	position: absolute;
 }
 #fireman:after {
@@ -65,7 +69,7 @@ h1 {
 #firetruck {
 	width: 100px;
 	height: 50px;
-	background-color: red;
+	background-color: var(--color-red);
 	position: relative;
 }
 #firetruck:after,
@@ -74,7 +78,7 @@ h1 {
 	width: 20px;
 	height: 20px;
 	border-radius: 100%;
-	background-color: #000;
+	background-color: var(--color-black);
 	position: absolute;
 	bottom: -10px;
 }
@@ -92,7 +96,7 @@ h1 {
 	font-family: sans-serif;
 	font-size: 50px;
 	position: absolute;
-	color: darkgrey;
+	color: var(--color-gray);
 	text-transform: uppercase;
 	letter-spacing: 10px;
 }

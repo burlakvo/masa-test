@@ -97,6 +97,7 @@ function calculate (expression) {
 function calculatePart (expression, side, char = "") {
     let result = [];
     let regex = new RegExp((side == "l") ? "(\\+|-|\\*|\\/|\\()" : "(\\+|-|\\*|\\/|v|\\^|\\)|%)");
+    let compare = (side == "l") ? ">" : "<";
 
     // если выражение в скобках
     if (/^\((.)+\)$/.test(expression)) {
@@ -125,25 +126,28 @@ function calculatePart (expression, side, char = "") {
             indexO = expression[ind + "ndexOf"]("+");
         }
         if (expression[ind + "ndexOf"]("-") != -1) {
-            indexO = (expression[ind + "ndexOf"]("-") > indexO) ? expression[ind + "ndexOf"]("-") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("-") + compare + indexO)) ? expression[ind + "ndexOf"]("-") : indexO;
         }
         if (expression[ind + "ndexOf"]("*") != -1) {
-            indexO = (expression[ind + "ndexOf"]("*") > indexO) ? expression[ind + "ndexOf"]("*") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("*") + compare + indexO)) ? expression[ind + "ndexOf"]("*") : indexO;
         }
         if (expression[ind + "ndexOf"]("/") != -1) {
-            indexO = (expression[ind + "ndexOf"]("/") > indexO) ? expression[ind + "ndexOf"]("/") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("/") + compare + indexO)) ? expression[ind + "ndexOf"]("/") : indexO;
         }
         if (expression[ind + "ndexOf"]("(") != -1) {
-            indexO = (expression[ind + "ndexOf"]("(") > indexO) ? expression[ind + "ndexOf"]("(") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("(") + compare + indexO)) ? expression[ind + "ndexOf"]("(") : indexO;
+        }
+        if (expression[ind + "ndexOf"](")") != -1) {
+            indexO = (eval(expression[ind + "ndexOf"](")") + compare + indexO)) ? expression[ind + "ndexOf"](")") : indexO;
         }
         if (expression[ind + "ndexOf"]("^") != -1 && side == "r") {
-            indexO = (expression[ind + "ndexOf"]("^") < indexO) ? expression[ind + "ndexOf"]("^") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("^") + compare + indexO)) ? expression[ind + "ndexOf"]("^") : indexO;
         }
         if (expression[ind + "ndexOf"]("v") != -1 && side == "r") {
-            indexO = (expression[ind + "ndexOf"]("v") < indexO) ? expression[ind + "ndexOf"]("v") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("v") + compare + indexO)) ? expression[ind + "ndexOf"]("v") : indexO;
         }
         if (expression[ind + "ndexOf"]("%") != -1 && side == "r") {
-            indexO = (expression[ind + "ndexOf"]("%") < indexO) ? expression[ind + "ndexOf"]("%") : indexO;
+            indexO = (eval(expression[ind + "ndexOf"]("%") + compare + indexO)) ? expression[ind + "ndexOf"]("%") : indexO;
         }
 
         // операнд - вторая подстрока для левой стороны или первая - для левой

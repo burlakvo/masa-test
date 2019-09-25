@@ -48,123 +48,13 @@ function calculate (expression) {
         // разбить строку по первому вхождению степени
         let line = expression.match(/^([^\^]*)\^(.+)$/);
 
-
         // левую часть, line[1], проверить с конца строки на наличие операторов
-
-        let le, lo;
-
-        // если в скобках
-        if (/^\((.)+\)$/.test(line[1])) {
-            // выражение - le = "0+";
-            le = "0+";
-
-            // левый операнд - lo = рекурсия line[1]
-            lo = calculate(line[1]);
-        }
-
-        // иначе, если есть оператор
-        else if (/(\+|-|\*|\/|\()/.test(line[1])) {
-            // разбить по нему строку
-            let indexO = 0;
-
-            if (line[1].lastIndexOf("+") != -1) {
-                indexO = line[1].lastIndexOf("+");
-            }
-            if (line[1].lastIndexOf("-") != -1) {
-                indexO = (line[1].lastIndexOf("-") > indexO) ? line[1].lastIndexOf("-") : indexO;
-            }
-            if (line[1].lastIndexOf("*") != -1) {
-                indexO = (line[1].lastIndexOf("*") > indexO) ? line[1].lastIndexOf("*") : indexO;
-            }
-            if (line[1].lastIndexOf("/") != -1) {
-                indexO = (line[1].lastIndexOf("/") > indexO) ? line[1].lastIndexOf("/") : indexO;
-            }
-            if (line[1].lastIndexOf("(") != -1) {
-                indexO = (line[1].lastIndexOf("(") > indexO) ? line[1].lastIndexOf("(") : indexO;
-            }
-
-
-            // выражение - le = line[1].substring(0, indexO + 1);
-            le = line[1].substring(0, indexO + 1);
-
-            // левый операнд - lo = line[1].substring(indexO + 1, line[1].length);
-            lo = line[1].substring(indexO + 1, line[1].length);
-
-        }
-
-        // иначе, если нет оператора
-        else {
-            // выражение - le = "0+";
-            le = "0+";
-
-            // левый операнд - lo = line[1]
-            lo = line[1];
-        }
+        let l = calculatePart(line[1], "l");
 
         // правую часть, line[2], проверить с начала строки на наличие операторов
+        let r = calculatePart(line[2], "r");
 
-        let ro, re;
-
-        // если в скобках
-        if (/^\((.)+\)$/.test(line[2])) {
-            // правый операнд - ro = рекурсия line[2]
-            ro = calculate(line[2]);
-
-            // выражение - re = "+0"
-            re = "+0";
-        }
-
-        // иначе, если есть оператор
-        else if (/(\+|-|\*|\/|v|\^|\)|%)/.test(line[2])) {
-            // разбить по нему строку
-            let indexO = line[2].length;
-
-            if (line[2].indexOf("+") != -1) {
-                indexO = line[2].indexOf("+");
-            }
-            if (line[2].indexOf("-") != -1) {
-                indexO = (line[2].indexOf("-") < indexO) ? line[2].indexOf("-") : indexO;
-            }
-            if (line[2].indexOf("*") != -1) {
-                indexO = (line[2].indexOf("*") < indexO) ? line[2].indexOf("*") : indexO;
-            }
-            if (line[2].indexOf("/") != -1) {
-                indexO = (line[2].indexOf("/") < indexO) ? line[2].indexOf("/") : indexO;
-            }
-            if (line[2].indexOf(")") != -1) {
-                indexO = (line[2].indexOf(")") < indexO) ? line[2].indexOf(")") : indexO;
-            }
-            if (line[2].indexOf("^") != -1) {
-                indexO = (line[2].indexOf("^") < indexO) ? line[2].indexOf("^") : indexO;
-            }
-            if (line[2].indexOf("v") != -1) {
-                indexO = (line[2].indexOf("v") < indexO) ? line[2].indexOf("v") : indexO;
-            }
-            if (line[2].indexOf("%") != -1) {
-                indexO = (line[2].indexOf("%") < indexO) ? line[2].indexOf("%") : indexO;
-            }
-
-            // правый операнд - ro = line[2].substring(0, indexO);
-            ro = line[2].substring(0, indexO);
-
-            // выражение - re = line[2].substring(indexO, line[1].length);
-            re = line[2].substring(indexO, line[2].length);
-        }
-
-        // иначе, если нет оператора
-        else {
-            // правый операнд - ro = line[2]
-            ro = line[2];
-            // выражение - re = "+0"
-            re = "+0";
-        }
-
-        /*
-        собрать строку s = le + Math.pow(lo, ro) + re
-        вернуть рекурсию s
-        */
-
-        let newExpression = le + Math.pow(lo, ro) + re;
+        let newExpression = l["expression"] + Math.pow(l["operand"], r["operand"]) + r["expression"];
         return calculate(newExpression);
     }
 
@@ -173,128 +63,13 @@ function calculate (expression) {
         // разбить строку по первому вхождению корня
         let line = expression.match(/^([^v]*)v(.+)$/);
 
-        // левую часть, line[1], проверить с конца строки на наличие операторов
-
-        let le, lo;
-
-        // если выражение в скобках
-        if (/^\((.)+\)$/.test(line[1])) {
-            // выражение - le = "0+";
-            le = "0+";
-
-            // операнд - lo = рекурсия line[1]
-            lo = calculate(line[1]);
-        }
-
-        // иначе, если сразу оператор
-        else if (/(\+|-|\*|\/|\()$/.test(line[1]) || line[1] == "") {
-            // выражение - le = line[1]
-            le = line[1];
-
-            // операнд - lo = 2
-            lo = 2;
-        }
-
-        // иначе, если есть оператор
-        else if (/(\+|-|\*|\/|\()/.test(line[1])) {
-            // разбить по нему строку
-            let indexO;
-
-            if (line[1].lastIndexOf("+") != -1) {
-                indexO = line[1].lastIndexOf("+");
-            }
-            if (line[1].lastIndexOf("-") != -1) {
-                indexO = (line[1].lastIndexOf("-") > indexO) ? line[1].lastIndexOf("-") : indexO;
-            }
-            if (line[1].lastIndexOf("*") != -1) {
-                indexO = (line[1].lastIndexOf("*") > indexO) ? line[1].lastIndexOf("*") : indexO;
-            }
-            if (line[1].lastIndexOf("/") != -1) {
-                indexO = (line[1].lastIndexOf("/") > indexO) ? line[1].lastIndexOf("/") : indexO;
-            }
-            if (line[1].lastIndexOf("(") != -1) {
-                indexO = (line[1].lastIndexOf("(") > indexO) ? line[1].lastIndexOf("(") : indexO;
-            }
-
-            // выражение - le = line[1].substring(0, indexO + 1);
-            le = line[1].substring(0, indexO + 1);
-
-            // левый операнд - lo = line[1].substring(indexO + 1, line[1].length);
-            lo = line[1].substring(indexO + 1, line[1].length);
-        }
-
-        // иначе, если оператора нет
-        else {
-            // выражение - le = "0+";
-            le = "0+";
-
-            // операнд - lo = line[1]
-            lo = line[1];
-        }
+        // левая часть, line[1]
+        let l = calculatePart(line[1], "l", "v");
 
         // правую часть, line[2], проверить с начала строки на наличие операторов
+        let r = calculatePart(line[2], "r");
 
-        let ro, re;
-
-        // если в скобках
-        if (/^\((.)+\)$/.test(line[2])) {
-            // правый операнд - ro = рекурсия line[2]
-            ro = calculate(line[2]);
-
-            // выражение - re = "+0"
-            re = "+0";
-        }
-
-        // иначе, если есть оператор
-        else if (/(\+|-|\*|\/|v|\^|\)|%)/.test(line[2])) {
-            // разбить по нему строку
-            let indexO = line[2].length;
-
-            if (line[2].indexOf("+") != -1) {
-                indexO = line[2].indexOf("+");
-            }
-            if (line[2].indexOf("-") != -1) {
-                indexO = (line[2].indexOf("-") < indexO) ? line[2].indexOf("-") : indexO;
-            }
-            if (line[2].indexOf("*") != -1) {
-                indexO = (line[2].indexOf("*") < indexO) ? line[2].indexOf("*") : indexO;
-            }
-            if (line[2].indexOf("/") != -1) {
-                indexO = (line[2].indexOf("/") < indexO) ? line[2].indexOf("/") : indexO;
-            }
-            if (line[2].indexOf(")") != -1) {
-                indexO = (line[2].indexOf(")") < indexO) ? line[2].indexOf(")") : indexO;
-            }
-            if (line[2].indexOf("^") != -1) {
-                indexO = (line[2].indexOf("^") < indexO) ? line[2].indexOf("^") : indexO;
-            }
-            if (line[2].indexOf("v") != -1) {
-                indexO = (line[2].indexOf("v") < indexO) ? line[2].indexOf("v") : indexO;
-            }
-            if (line[2].indexOf("%") != -1) {
-                indexO = (line[2].indexOf("%") < indexO) ? line[2].indexOf("%") : indexO;
-            }
-
-            // правый операнд - ro = line[2].substring(0, indexO);
-            ro = line[2].substring(0, indexO);
-
-            // выражение - re = line[2].substring(indexO, line[1].length);
-            re = line[2].substring(indexO, line[2].length);
-        }
-
-        // иначе, если нет оператора
-        else {
-            // правый операнд - ro = line[2]
-            ro = line[2];
-
-            // выражение - re = "+0"
-            re = "+0";
-        }
-
-        // собрать строку s = le + Math.pow(ro, 1/lo) + re
-        // вернуть рекурсию s
-
-        let newExpression = le + Math.pow(ro, 1/lo) + re;
+        let newExpression = l["expression"] + Math.pow(r["operand"], 1/l["operand"]) + r["expression"];
         return calculate(newExpression);
     }
 
@@ -303,70 +78,88 @@ function calculate (expression) {
         // разбить строку по первому вхождению процента
         let line = expression.match(/^([^%]+)%(.*)$/);
 
-        // левую часть, line[1], проверить с конца строки на наличие операторов
-
-        let le, lo;
-
-        // если выражение в скобках
-        if (/^\((.)+\)$/.test(line[1])) {
-            // выражение - le = "0+";
-            le = "0+";
-
-            // операнд - lo = рекурсия line[1]
-            lo = calculate(line[1]);
-        }
-
-        // иначе, если есть оператор
-        else if (/(\+|-|\*|\/|\()/.test(line[1])) {
-            // разбить по нему строку
-            let indexO = 0;
-
-            if (line[1].lastIndexOf("+") != -1) {
-                indexO = line[1].lastIndexOf("+");
-            }
-            if (line[1].lastIndexOf("-") != -1) {
-                indexO = (line[1].lastIndexOf("-") > indexO) ? line[1].lastIndexOf("-") : indexO;
-            }
-            if (line[1].lastIndexOf("*") != -1) {
-                indexO = (line[1].lastIndexOf("*") > indexO) ? line[1].lastIndexOf("*") : indexO;
-            }
-            if (line[1].lastIndexOf("/") != -1) {
-                indexO = (line[1].lastIndexOf("/") > indexO) ? line[1].lastIndexOf("/") : indexO;
-            }
-            if (line[1].lastIndexOf("(") != -1) {
-                indexO = (line[1].lastIndexOf("(") > indexO) ? line[1].lastIndexOf("(") : indexO;
-            }
-
-            // выражение - le = line[1].substring(0, indexO + 1);
-            le = line[1].substring(0, indexO + 1);
-
-            // левый операнд - lo = line[1].substring(indexO + 1, line[1].length);
-            lo = line[1].substring(indexO + 1, line[1].length);
-        }
-
-        // иначе, если оператора нет
-        else {
-            // выражение - le = "0+";
-            le = "0+";
-
-            // операнд - lo = line[1]
-            lo = line[1];
-        }
+        // левая часть, line[1]
+        let l = calculatePart(line[1], "l")
 
         // правая часть, line[2]
-
         let re = line[2];
 
-        // собрать строку s = le + Math.pow(ro, 1/lo) + re
-        // вернуть рекурсию s
-
-        let newExpression = le + lo / 100 + re;
+        let newExpression = l["expression"] + l["operand"] / 100 + re;
         return calculate(newExpression);
     }
 }
 
-// "(v3+2*v2)/vv5".match(/^([^v]*)v(.+)$/)
+/*
+    * expression
+    * side (l|r)
+      char (^|v|%)
+*/
+function calculatePart (expression, side, char = "") {
+    let result = [];
+    let regex = new RegExp((side == "l") ? "(\\+|-|\\*|\\/|\\()" : "(\\+|-|\\*|\\/|v|\\^|\\)|%)");
 
-// ^ is Math.pow(base, exponent)
-// v is Math.pow(base, 1/exponent)
-// % is base/100
+    // если выражение в скобках
+    if (/^\((.)+\)$/.test(expression)) {
+        // операнд
+        result["operand"] = calculate(expression);
+
+        // выражение
+        result["expression"] = (side == "l") ? "0+" : "+0";
+    }
+
+    // иначе, если сразу оператор | только для корня в левой части
+    else if ((/(\+|-|\*|\/|\()$/.test(expression) || expression == "") && side == "l" && char == "v") {
+        // выражение
+        result["expression"] = expression;
+
+        // операнд
+        result["operand"] = 2;
+    }
+
+    // иначе, если есть оператор разбить по нему строку
+    else if (regex.test(expression)) {
+        let indexO = 0; // позиция для разбивки строки
+        let ind = (side == "l") ? "lastI" : "i"; // для левой части необходимо искать оператор с конца, а для правой - с начала
+
+        if (expression[ind + "ndexOf"]("+") != -1) {
+            indexO = expression[ind + "ndexOf"]("+");
+        }
+        if (expression[ind + "ndexOf"]("-") != -1) {
+            indexO = (expression[ind + "ndexOf"]("-") > indexO) ? expression[ind + "ndexOf"]("-") : indexO;
+        }
+        if (expression[ind + "ndexOf"]("*") != -1) {
+            indexO = (expression[ind + "ndexOf"]("*") > indexO) ? expression[ind + "ndexOf"]("*") : indexO;
+        }
+        if (expression[ind + "ndexOf"]("/") != -1) {
+            indexO = (expression[ind + "ndexOf"]("/") > indexO) ? expression[ind + "ndexOf"]("/") : indexO;
+        }
+        if (expression[ind + "ndexOf"]("(") != -1) {
+            indexO = (expression[ind + "ndexOf"]("(") > indexO) ? expression[ind + "ndexOf"]("(") : indexO;
+        }
+        if (expression[ind + "ndexOf"]("^") != -1 && side == "r") {
+            indexO = (expression[ind + "ndexOf"]("^") < indexO) ? expression[ind + "ndexOf"]("^") : indexO;
+        }
+        if (expression[ind + "ndexOf"]("v") != -1 && side == "r") {
+            indexO = (expression[ind + "ndexOf"]("v") < indexO) ? expression[ind + "ndexOf"]("v") : indexO;
+        }
+        if (expression[ind + "ndexOf"]("%") != -1 && side == "r") {
+            indexO = (expression[ind + "ndexOf"]("%") < indexO) ? expression[ind + "ndexOf"]("%") : indexO;
+        }
+
+        // операнд - вторая подстрока для левой стороны или первая - для левой
+        result["operand"] = (side == "l") ? expression.substring(indexO + 1, expression.length) : expression.substring(0, indexO);
+        // выражение - первая подстрока для левой стороны или вторая - для левой
+        result["expression"] = (side == "l") ? expression.substring(0, indexO + 1) : expression.substring(indexO, expression.length);
+    }
+
+    // иначе, если нет оператора
+    else {
+        // операнд
+        result["operand"] = expression;
+
+        // выражение
+        result["expression"] = (side == "l") ? "0+" : "+0";
+    }
+
+    return result;
+}
